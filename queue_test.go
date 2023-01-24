@@ -3,20 +3,21 @@
 // @Author
 // @Update
 
-package queue
+package utilities_test
 
 import (
 	"fmt"
 	"math"
 	"testing"
 
+	"github.com/XyrusTheVirus/utilities"
 	"github.com/jaswdr/faker"
 	log "github.com/sirupsen/logrus"
 )
 
 func TestQueueOrder(t *testing.T) {
 	fake := faker.New()
-	queue, _ := NewQueue(uint(fake.UIntBetween(2, 10)))
+	queue, _ := utilities.NewQueue(uint(fake.UIntBetween(2, 10)))
 	var expected []uint
 	for i := 0; i < int(queue.MaxCapacity); i++ {
 		expected = append(expected, fake.UInt())
@@ -42,7 +43,7 @@ func TestQueueOrder(t *testing.T) {
 }
 
 func TestMaximumMemoryExcedded(t *testing.T) {
-	_, err := NewQueue(uint(math.Pow(2, 30)))
+	_, err := utilities.NewQueue(uint(math.Pow(2, 30)))
 	if err == nil {
 		t.Fatalf("Maximun memory exceeded error should raised")
 	}
@@ -50,7 +51,7 @@ func TestMaximumMemoryExcedded(t *testing.T) {
 
 func TestMaxCapacityExcedded(t *testing.T) {
 	fake := faker.New()
-	queue, err := NewQueue(uint(fake.UIntBetween(2, 10)))
+	queue, err := utilities.NewQueue(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -70,7 +71,7 @@ func TestMaxCapacityExcedded(t *testing.T) {
 
 func TestDequeueToEmptyQueue(t *testing.T) {
 	fake := faker.New()
-	queue, err := NewQueue(uint(fake.UIntBetween(2, 10)))
+	queue, err := utilities.NewQueue(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -104,7 +105,7 @@ func TestQueueConcurrency(t *testing.T) {
 	defer close(ch2)
 	fake := faker.New()
 	testNumber := fake.UInt()
-	queue, err := NewQueue(uint(fake.UIntBetween(2, 10)))
+	queue, err := utilities.NewQueue(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -114,7 +115,7 @@ func TestQueueConcurrency(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	go func(queue *Queue, testNumber uint, ch chan interface{}) {
+	go func(q *utilities.Queue, testNumber uint, ch chan interface{}) {
 		dequeueFlag := false
 		log.Info("Inside first goroutine")
 		if queue.IsEmpty() {
@@ -134,7 +135,7 @@ func TestQueueConcurrency(t *testing.T) {
 		ch <- true
 	}(queue, testNumber, ch1)
 
-	go func(queue *Queue, testNumber uint, ch chan interface{}) {
+	go func(queue *utilities.Queue, testNumber uint, ch chan interface{}) {
 		enqueueFlag := false
 		log.Info("Inside second goroutine")
 		if queue.NumOfElements == 2 {

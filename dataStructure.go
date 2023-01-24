@@ -3,7 +3,7 @@
 // @Author
 // @Update
 
-package datastructure
+package utilities
 
 import (
 	"math"

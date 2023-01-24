@@ -3,24 +3,22 @@
 // @Author
 // @Update
 
-package queue
+package utilities
 
 import (
 	"fmt"
 	"sync"
-
-	datastructure "github.com/XyrusTheVirus/utilities/dataStructure"
 )
 
 // Defines a stack data structure implemented by linked list
 type Queue struct {
-	datastructure.Common
+	Common
 }
 
 func NewQueue(maxCapacity uint) (*Queue, error) {
 	queue := Queue{
-		Common: datastructure.Common{
-			Ds:          datastructure.NewLinkedList(datastructure.TAIL),
+		Common: Common{
+			Ds:          NewLinkedList(TAIL),
 			Mu:          sync.Mutex{},
 			MaxCapacity: maxCapacity,
 		},
@@ -42,8 +40,8 @@ func (q *Queue) Enqueue(val interface{}) error {
 		return fmt.Errorf("Maximum capacity exceeded")
 	}
 
-	q.Ds.(*datastructure.LinkedList).AddElement(val)
-	q.Top = q.Ds.(*datastructure.LinkedList).GetHead()
+	q.Ds.(*LinkedList).AddElement(val)
+	q.Top = q.Ds.(*LinkedList).GetHead()
 	q.NumOfElements++
 	return nil
 }
@@ -58,7 +56,7 @@ func (q *Queue) Dequeue() (interface{}, error) {
 
 	val := q.Top.GetVal()
 	q.Ds.DeleteElement(q.Top)
-	q.Top = q.Ds.(*datastructure.LinkedList).GetHead()
+	q.Top = q.Ds.(*LinkedList).GetHead()
 	q.NumOfElements--
 	return val, nil
 }

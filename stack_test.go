@@ -3,20 +3,21 @@
 // @Author
 // @Update
 
-package stack
+package utilities_test
 
 import (
 	"fmt"
 	"math"
 	"testing"
 
+	"github.com/XyrusTheVirus/utilities"
 	"github.com/jaswdr/faker"
 	log "github.com/sirupsen/logrus"
 )
 
 func TestStackOrder(t *testing.T) {
 	fake := faker.New()
-	stack, _ := NewStack(uint(fake.UIntBetween(2, 10)))
+	stack, _ := utilities.NewStack(uint(fake.UIntBetween(2, 10)))
 	var expected []uint
 	for i := 0; i < int(stack.MaxCapacity); i++ {
 		expected = append(expected, fake.UInt())
@@ -41,16 +42,16 @@ func TestStackOrder(t *testing.T) {
 	}
 }
 
-func TestMaximumMemoryExcedded(t *testing.T) {
-	_, err := NewStack(uint(math.Pow(2, 30)))
+func TestStackMaximumMemoryExcedded(t *testing.T) {
+	_, err := utilities.NewStack(uint(math.Pow(2, 30)))
 	if err == nil {
 		t.Fatalf("Maximun memory exceeded error should raised")
 	}
 }
 
-func TestMaxCapacityExcedded(t *testing.T) {
+func TestStackMaxCapacityExcedded(t *testing.T) {
 	fake := faker.New()
-	stack, err := NewStack(uint(fake.UIntBetween(2, 10)))
+	stack, err := utilities.NewStack(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -68,9 +69,9 @@ func TestMaxCapacityExcedded(t *testing.T) {
 	}
 }
 
-func TestPopEmptyStack(t *testing.T) {
+func TestStackPopEmptyStack(t *testing.T) {
 	fake := faker.New()
-	stack, err := NewStack(uint(fake.UIntBetween(2, 10)))
+	stack, err := utilities.NewStack(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -104,7 +105,7 @@ func TestStackConcurrency(t *testing.T) {
 	defer close(ch2)
 	fake := faker.New()
 	testNumber := fake.UInt()
-	stack, err := NewStack(uint(fake.UIntBetween(2, 10)))
+	stack, err := utilities.NewStack(uint(fake.UIntBetween(2, 10)))
 	if err != nil {
 		t.Fatalf(err.Error())
 	}
@@ -114,7 +115,7 @@ func TestStackConcurrency(t *testing.T) {
 		t.Fatalf(err.Error())
 	}
 
-	go func(stack *Stack, testNumber uint, ch chan interface{}) {
+	go func(stack *utilities.Stack, testNumber uint, ch chan interface{}) {
 		popFlag := false
 		log.Info("Inside first goroutine")
 		if stack.IsEmpty() {
@@ -132,7 +133,7 @@ func TestStackConcurrency(t *testing.T) {
 		ch <- true
 	}(stack, testNumber, ch1)
 
-	go func(stack *Stack, testNumber uint, ch chan interface{}) {
+	go func(stack *utilities.Stack, testNumber uint, ch chan interface{}) {
 		pushFlag := false
 		log.Info("Inside second goroutine")
 		if stack.NumOfElements == 2 {
@@ -170,7 +171,7 @@ func TestStackConcurrency(t *testing.T) {
 
 }
 
-func handleResponse(res interface{}, t *testing.T) {
+func handleStackResponse(res interface{}, t *testing.T) {
 
 	switch res.(type) {
 	case error:

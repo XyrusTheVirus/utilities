@@ -3,24 +3,22 @@
 // @Author
 // @Update
 
-package stack
+package utilities
 
 import (
 	"fmt"
 	"sync"
-
-	datastructure "github.com/XyrusTheVirus/utilities/dataStructure"
 )
 
 // Defines a stack data structure implemented by linked list
 type Stack struct {
-	datastructure.Common
+	Common
 }
 
 func NewStack(maxCapacity uint) (*Stack, error) {
 	stack := Stack{
-		Common: datastructure.Common{
-			Ds:          datastructure.NewLinkedList(datastructure.HEAD),
+		Common: Common{
+			Ds:          NewLinkedList(HEAD),
 			Mu:          sync.Mutex{},
 			MaxCapacity: maxCapacity,
 		},
@@ -42,8 +40,8 @@ func (s *Stack) Push(val interface{}) error {
 		return fmt.Errorf("Maximum capacity exceeded")
 	}
 
-	s.Ds.(*datastructure.LinkedList).AddElement(val)
-	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
+	s.Ds.(*LinkedList).AddElement(val)
+	s.Top = s.Ds.(*LinkedList).GetHead()
 	s.NumOfElements++
 	return nil
 }
@@ -58,7 +56,7 @@ func (s *Stack) Pop() (interface{}, error) {
 
 	temp := s.Top
 	s.Ds.DeleteElement(s.Top)
-	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
+	s.Top = s.Ds.(*LinkedList).GetHead()
 	s.NumOfElements--
 	return temp.GetVal(), nil
 }
