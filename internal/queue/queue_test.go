@@ -123,10 +123,12 @@ func TestQueueConcurrency(t *testing.T) {
 		queue.Enqueue(testNumber)
 		if dequeueFlag && queue.NumOfElements != 1 {
 			ch <- fmt.Errorf("Second goroutine arrived first, but the queue number of elements is wrong")
+			return
 		}
 
 		if !dequeueFlag && queue.NumOfElements != 2 {
 			ch <- fmt.Errorf("The First go routuine arrived first, but the queue number of elements is wrong")
+			return
 		}
 
 		ch <- true
@@ -141,29 +143,33 @@ func TestQueueConcurrency(t *testing.T) {
 		queue.Dequeue()
 		if enqueueFlag && queue.NumOfElements != 1 {
 			ch <- fmt.Errorf("First goroutine arrived first, but the queue number of elements is wrong")
+			return
 		}
 
 		if !queue.IsEmpty() {
 			ch <- fmt.Errorf("Second go routuine arrived first, but the queue is not empty")
+			return
 		}
 
 		ch <- true
 	}(queue, testNumber, ch2)
 
 	canBreak := false
-	select {
-	case res := <-ch1:
-		if canBreak {
-			break
+	for {
+		select {
+		case res := <-ch1:
+			if canBreak == true {
+				return
+			}
+			canBreak = true
+			handleResponse(res, t)
+		case res := <-ch2:
+			if canBreak == true {
+				return
+			}
+			canBreak = true
+			handleResponse(res, t)
 		}
-		canBreak = true
-		handleResponse(res, t)
-	case res := <-ch2:
-		if canBreak {
-			break
-		}
-		canBreak = true
-		handleResponse(res, t)
 	}
 
 }

@@ -115,17 +115,17 @@ func TestStackConcurrency(t *testing.T) {
 	}
 
 	go func(stack *Stack, testNumber uint, ch chan interface{}) {
-		destackFlag := false
+		popFlag := false
 		log.Info("Inside first goroutine")
 		if stack.IsEmpty() {
-			destackFlag = true
+			popFlag = true
 		}
 		stack.Push(testNumber)
-		if destackFlag && stack.NumOfElements != 1 {
+		if popFlag && stack.NumOfElements != 1 {
 			ch <- fmt.Errorf("Second goroutine arrived first, but the stack number of elements is wrong")
 		}
 
-		if !destackFlag && stack.NumOfElements != 2 {
+		if !popFlag && stack.NumOfElements != 2 {
 			ch <- fmt.Errorf("The First go routuine arrived first, but the stack number of elements is wrong")
 		}
 
@@ -133,13 +133,13 @@ func TestStackConcurrency(t *testing.T) {
 	}(stack, testNumber, ch1)
 
 	go func(stack *Stack, testNumber uint, ch chan interface{}) {
-		enstackFlag := false
+		pushFlag := false
 		log.Info("Inside second goroutine")
 		if stack.NumOfElements == 2 {
-			enstackFlag = true
+			pushFlag = true
 		}
 		stack.Pop()
-		if enstackFlag && stack.NumOfElements != 1 {
+		if pushFlag && stack.NumOfElements != 1 {
 			ch <- fmt.Errorf("First goroutine arrived first, but the stack number of elements is wrong")
 		}
 
@@ -151,19 +151,21 @@ func TestStackConcurrency(t *testing.T) {
 	}(stack, testNumber, ch2)
 
 	canBreak := false
-	select {
-	case res := <-ch1:
-		if canBreak {
-			break
+	for {
+		select {
+		case res := <-ch1:
+			if canBreak {
+				return
+			}
+			canBreak = true
+			handleResponse(res, t)
+		case res := <-ch2:
+			if canBreak {
+				return
+			}
+			canBreak = true
+			handleResponse(res, t)
 		}
-		canBreak = true
-		handleResponse(res, t)
-	case res := <-ch2:
-		if canBreak {
-			break
-		}
-		canBreak = true
-		handleResponse(res, t)
 	}
 
 }
