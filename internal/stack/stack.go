@@ -8,67 +8,59 @@ package stack
 import (
 	"fmt"
 	"sync"
-	datastructure "test/utilities/internal/dataStructure"
+
+	datastructure "github.com/XyrusTheVirus/utilities/internal/dataStructure"
 )
 
 // Defines a stack data structure implemented by linked list
 type Stack struct {
-	top           *datastructure.Node // Denotes the top of the stack
-	numOfElements int
-	ds            datastructure.DataStructure
-	mu            sync.Mutex
+	datastructure.Common
 }
 
-func NewStack() *Stack {
-	return &Stack{
-		ds: datastructure.NewLinkedList("Head"),
-		mu: sync.Mutex{},
+func NewStack(maxCapacity uint) (*Stack, error) {
+	stack := Stack{
+		Common: datastructure.Common{
+			Ds:          datastructure.NewLinkedList(datastructure.HEAD),
+			Mu:          sync.Mutex{},
+			MaxCapacity: maxCapacity,
+		},
 	}
+
+	if stack.IsMaximumMemoryExceeded() {
+		return nil, fmt.Errorf("Stack max capicity, exceeded Maximum memory space")
+	}
+
+	return &stack, nil
 }
 
 // Inserts item to the top of the stack
 // Receives interface{} item to insert
-func (s *Stack) Push(v interface{}) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.top = s.ds.AddElement(v).(*datastructure.Node)
-	s.numOfElements++
+func (s *Stack) Push(val interface{}) {
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
+	if s.IsMaxCapicityExcedded() {
+		fmt.Println("Maximum capacity exceeded")
+		return
+	}
+
+	s.Ds.(*datastructure.LinkedList).AddElement(val)
+	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
+	s.NumOfElements++
 	return
 }
 
 // Removes item from the top of the stack
-// Receives the head of the linked list
 func (s *Stack) Pop() interface{} {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	temp := s.Top()
-	s.ds.DeleteElement(s.Top())
-	s.top = s.ds.(datastructure.LinkedList).GetHead()
-	s.numOfElements--
-	return temp.(*datastructure.Node).GetVal()
-}
-
-// Returns the top of the stack
-func (s *Stack) Top() *datastructure.Node {
-	return s.top
-}
-
-// Returns the number of the elements
-func (s *Stack) NunOfElements() int {
-	return s.numOfElements
-}
-
-// Returns if stack is empty or not
-func (s *Stack) isEmpty() bool {
-	return s.top == nil
-}
-
-// Prints the stack
-// Receives the head of the linked list
-func (s *Stack) Print() {
-	temp := s.Top()
-	for temp != nil {
-		fmt.Println(temp.val)
-		temp = temp.next
+	s.Mu.Lock()
+	defer s.Mu.Unlock()
+	if s.Top == nil {
+		fmt.Println("Stack is empty")
+		return nil
 	}
+
+	temp := s.Top
+	s.Ds.DeleteElement(s.Top)
+	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
+	s.NumOfElements--
+	return temp.GetVal()
 }

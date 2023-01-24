@@ -5,12 +5,12 @@
 
 package main
 
-import "internal/stack"
+import "github.com/XyrusTheVirus/utilities/internal/queue"
 
 func main() {
-	stack := stack.NewStack()
-	stack.Push(1)
-	stack.Push(2)
-	stack.Push(3)
-	stack.Print()
+	queue, _ := queue.NewQueue(100)
+	queue.Enqueue(1)
+	queue.Enqueue(2)
+	queue.Enqueue(3)
+	queue.Print()
 }

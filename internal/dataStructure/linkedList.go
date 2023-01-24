@@ -5,6 +5,8 @@
 
 package datastructure
 
+import "fmt"
+
 type LinkedList struct {
 	head           *Node
 	tail           *Node
@@ -16,31 +18,34 @@ type Node struct {
 	next *Node
 }
 
-func NewLinkedList(insertionOrder string) LinkedList {
-	return LinkedList{insertionOrder: insertionOrder}
+const (
+	HEAD = "Head"
+	TAIL = "Tail"
+)
+
+func NewLinkedList(insertionOrder string) *LinkedList {
+	return &LinkedList{insertionOrder: insertionOrder}
 }
 
-func (l LinkedList) AddElement(val interface{}) interface{} {
-	list := &l
-	if l.insertionOrder == "Head" {
-		return list.insertToHead(val)
+func (l *LinkedList) AddElement(val interface{}) interface{} {
+	if l.insertionOrder == HEAD {
+		return l.insertToHead(val)
 	}
 
-	return list.insertToTail(val)
+	return l.insertToTail(val)
 
 }
 
-func (l LinkedList) DeleteElement(val interface{}) {
+func (l *LinkedList) DeleteElement(val interface{}) {
 	if l.head == nil {
 		return
 	}
 
-	list := &l
 	if val.(*Node) == l.head {
-		temp := list.head
-		list.head = temp.next
+		temp := l.head
+		l.head = temp.next
 	} else {
-		temp := list.head.next
+		temp := l.head.next
 		var prev *Node
 		for temp != nil && val.(*Node) != temp {
 			prev = temp
@@ -52,6 +57,15 @@ func (l LinkedList) DeleteElement(val interface{}) {
 
 	}
 
+}
+
+// Prints the linked list
+func (l *LinkedList) Print() {
+	temp := l.GetHead()
+	for temp != nil {
+		fmt.Println(temp.val)
+		temp = temp.next
+	}
 }
 
 func (l LinkedList) GetHead() *Node {
@@ -90,7 +104,7 @@ func (l *LinkedList) insertToTail(val interface{}) *Node {
 		return node
 	}
 
-	l.tail.next = l.tail
+	l.tail.next = node
 	l.tail = node
 	return node
 }
