@@ -35,32 +35,30 @@ func NewStack(maxCapacity uint) (*Stack, error) {
 
 // Inserts item to the top of the stack
 // Receives interface{} item to insert
-func (s *Stack) Push(val interface{}) {
+func (s *Stack) Push(val interface{}) error {
 	s.Mu.Lock()
 	defer s.Mu.Unlock()
 	if s.IsMaxCapicityExcedded() {
-		fmt.Println("Maximum capacity exceeded")
-		return
+		return fmt.Errorf("Maximum capacity exceeded")
 	}
 
 	s.Ds.(*datastructure.LinkedList).AddElement(val)
 	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
 	s.NumOfElements++
-	return
+	return nil
 }
 
 // Removes item from the top of the stack
-func (s *Stack) Pop() interface{} {
+func (s *Stack) Pop() (interface{}, error) {
 	s.Mu.Lock()
 	defer s.Mu.Unlock()
-	if s.Top == nil {
-		fmt.Println("Stack is empty")
-		return nil
+	if s.IsEmpty() {
+		return nil, fmt.Errorf("Stack is empty")
 	}
 
 	temp := s.Top
 	s.Ds.DeleteElement(s.Top)
 	s.Top = s.Ds.(*datastructure.LinkedList).GetHead()
 	s.NumOfElements--
-	return temp.GetVal()
+	return temp.GetVal(), nil
 }
