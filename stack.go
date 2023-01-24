@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"sync"
 
-	datastructure "github.com/XyrusTheVirus/utilities/internal/dataStructure"
+	datastructure "github.com/XyrusTheVirus/utilities/dataStructure"
 )
 
 // Defines a stack data structure implemented by linked list

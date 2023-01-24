@@ -5,7 +5,7 @@
 
 package main
 
-import "github.com/XyrusTheVirus/utilities/internal/queue"
+import "github.com/XyrusTheVirus/utilities/queue"
 
 func main() {
 	queue, _ := queue.NewQueue(100)
