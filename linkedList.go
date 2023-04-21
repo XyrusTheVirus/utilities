@@ -76,7 +76,11 @@ func (n *Node) GetVal() interface{} {
 	return n.val
 }
 
-func (n *Node) GeetNext() *Node {
+func (n *Node) SetVal(val interface{}) {
+	n.val = val
+}
+
+func (n *Node) GetNext() *Node {
 	return n.next
 }
 
