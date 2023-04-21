@@ -76,6 +76,10 @@ func (n *Node) GetVal() interface{} {
 	return n.val
 }
 
+func (n *Node) GetNext() *Node {
+	return n.next
+}
+
 func (l *LinkedList) insertToHead(val interface{}) *Node {
 	node := &Node{
 		val:  val,
