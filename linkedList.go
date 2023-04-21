@@ -68,7 +68,7 @@ func (l *LinkedList) Print() {
 	}
 }
 
-func (l LinkedList) GetHead() *Node {
+func (l *LinkedList) GetHead() *Node {
 	return l.head
 }
 
