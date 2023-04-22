@@ -72,6 +72,18 @@ func (l *LinkedList) GetHead() *Node {
 	return l.head
 }
 
+func (l *LinkedList) SetHead(head *Node) {
+	l.head = head
+}
+
+func (l *LinkedList) GetTail() *Node {
+	return l.tail
+}
+
+func (l *LinkedList) SetTail(tail *Node) {
+	l.tail = tail
+}
+
 func (n *Node) GetVal() interface{} {
 	return n.val
 }
