@@ -36,27 +36,22 @@ func (l *LinkedList) AddElement(val interface{}) interface{} {
 
 }
 
-func (l *LinkedList) DeleteElement(val interface{}) {
-	if l.head == nil {
+func (l *LinkedList) DeleteElement(node *Node) {
+	if node == nil {
 		return
 	}
 
-	if val.(*Node) == l.head {
-		temp := l.head
-		l.head = temp.next
-	} else {
-		temp := l.head.next
-		var prev *Node
-		for temp != nil && val.(*Node) != temp {
-			prev = temp
-			temp = temp.next
-		}
-
-		prev.next.next = temp.next
-		temp = nil
-
+	if node.GetNext() == nil {
+		node = nil
+		l.SetHead(nil)
+		l.SetTail(nil)
+		return
 	}
 
+	temp := node.GetNext()
+	node.SetVal(temp.GetVal())
+	node.SetNext(temp.GetNext())
+	node = nil
 }
 
 // Prints the linked list

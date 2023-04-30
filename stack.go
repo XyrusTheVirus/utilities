@@ -54,9 +54,9 @@ func (s *Stack) Pop() (interface{}, error) {
 		return nil, fmt.Errorf("Stack is empty")
 	}
 
-	temp := s.Top
+	temp := s.Top.GetVal()
 	s.Ds.DeleteElement(s.Top)
 	s.Top = s.Ds.(*LinkedList).GetHead()
 	s.NumOfElements--
-	return temp.GetVal(), nil
+	return temp, nil
 }

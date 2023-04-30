@@ -13,7 +13,7 @@ import (
 
 type DataStructure interface {
 	AddElement(val interface{}) interface{}
-	DeleteElement(val interface{})
+	DeleteElement(node *Node)
 	Print()
 }
 
